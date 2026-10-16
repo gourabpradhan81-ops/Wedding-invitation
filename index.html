@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Royal Purple Wedding Invitation</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@600;700&family=Cormorant+Garamond:ital,wght@1,600&family=Great+Vibes&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <!-- QRCode.js Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <style>
+    :root {
+      --bg-deep: #130424;
+      --bg-purple: #260b47;
+      --bg-card: rgba(48, 15, 87, 0.82);
+      --gold: #f5d061;
+      --gold-dark: #c99e32;
+      --lavender: #e6d4ff;
+      --white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: radial-gradient(circle at center, #34125e 0%, #130424 100%);
+      color: var(--white);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Floating Sparkles Canvas */
+    #sparkle-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Main Container */
+    .app-container {
+      position: relative;
+      z-index: 2;
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 30px 18px 80px;
+    }
+
+    /* Creator Card */
+    .glass-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(14px);
+      border: 1.5px solid rgba(245, 208, 97, 0.4);
+      border-radius: 22px;
+      padding: 32px 26px;
+      box-shadow: 0 20px 55px rgba(0, 0, 0, 0.65);
+    }
+
+    .title-banner {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .title-banner h1 {
+      font-family: 'Cinzel Decorative', cursive;
+      color: var(--gold);
+      font-size: clamp(1.5rem, 4vw, 2.3rem);
+      letter-spacing: 1px;
+      text-shadow: 0 2px 12px rgba(245, 208, 97, 0.35);
+    }
+
+    .title-banner p {
+      color: var(--lavender);
+      font-size: 0.92rem;
+      margin-top: 6px;
+    }
+
+    /* STEP 1: Bride or Groom Selector Cards */
+    .side-selector-wrap {
+      margin-bottom: 26px;
+      text-align: center;
+    }
+
+    .side-selector-title {
+      font-family: 'Cinzel Decorative', cursive;
+      color: var(--gold);
+      font-size: 1.05rem;
+      margin-bottom: 12px;
+      letter-spacing: 0.8px;
+    }
+
+    .side-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    .side-card {
+      background: rgba(19, 4, 36, 0.65);
+      border: 2px solid rgba(245, 208, 97, 0.35);
+      border-radius: 16px;
+      padding: 16px 14px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .side-card .emoji {
+      font-size: 2rem;
+    }
+
+    .side-card .side-name {
+      font-weight: 600;
+      color: var(--white);
+      font-size: 1rem;
+    }
+
+    .side-card .side-desc {
+      font-size: 0.76rem;
+      color: var(--lavender);
+    }
+
+    .side-card.active {
+      background: linear-gradient(135deg, rgba(245, 208, 97, 0.25), rgba(114, 34, 189, 0.5));
+      border-color: var(--gold);
+      box-shadow: 0 0 22px rgba(245, 208, 97, 0.45);
+      transform: translateY(-2px);
+    }
+
+    .section-divider {
+      font-family: 'Cinzel Decorative', cursive;
+      color: var(--gold);
+      font-size: 1.05rem;
+      margin: 22px 0 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(245, 208, 97, 0.3);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .input-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 0.84rem;
+      color: var(--gold);
+      font-weight: 500;
+      letter-spacing: 0.4px;
+    }
+
+    input, select, textarea {
+      background: rgba(19, 4, 36, 0.75);
+      border: 1px solid rgba(245, 208, 97, 0.4);
+      border-radius: 10px;
+      padding: 11px 14px;
+      color: var(--white);
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.92rem;
+      outline: none;
+      transition: border 0.25s, box-shadow 0.25s;
+    }
+
+    select option {
+      background: #1f083d;
+      color: var(--white);
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 12px rgba(245, 208, 97, 0.35);
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 22px;
+    }
+
+    .btn {
+      cursor: pointer;
+      border: none;
+      border-radius: 50px;
+      padding: 12px 26px;
+      font-weight: 600;
+      font-size: 0.92rem;
+      letter-spacing: 0.5px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, #f5d061 0%, #c99e32 100%);
+      color: #1a0633;
+      box-shadow: 0 6px 20px rgba(245, 208, 97, 0.35);
+    }
+
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--gold);
+      border: 1px solid var(--gold);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(245, 208, 97, 0.5);
+    }
+
+    /* About Us Developer Footer on Data Requirement Page */
+    .about-us-footer {
+      margin-top: 32px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(245, 208, 97, 0.35);
+      text-align: center;
+    }
+
+    .about-us-footer h3 {
+      font-family: 'Cinzel Decorative', cursive;
+      color: var(--gold);
+      font-size: 1.05rem;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+
+    .about-us-footer p {
+      color: var(--lavender);
+      font-size: 0.9rem;
+      margin: 4px 0;
+    }
+
+    .about-us-footer a {
+      color: var(--gold);
+      text-decoration: none;
+      font-weight: 500;
+      transition: opacity 0.2s;
+    }
+
+    .about-us-footer a:hover {
+      text-decoration: underline;
+      opacity: 0.85;
+    }
+
+    /* Royal Curtain Overlay */
+    #curtain-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      overflow: hidden;
+    }
+
+    .curtain-panel {
+      position: absolute;
+      top: 0;
+      width: 50.5%;
+      height: 100%;
+      background: radial-gradient(circle at center, #3b136c 0%, #17042c 100%);
+      border-right: 3px solid var(--gold);
+      border-left: 3px solid var(--gold);
+      transition: transform 1.4s cubic-bezier(0.77, 0, 0.175, 1);
+      display: flex;
+      align-items: center;
+    }
+
+    .curtain-left { left: 0; }
+    .curtain-right { right: 0; }
+
+    #curtain-overlay.open .curtain-left {
+      transform: translateX(-100%);
+    }
+
+    #curtain-overlay.open .curtain-right {
+      transform: translateX(100%);
+    }
+
+    .wax-seal-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 102;
+      width: 155px;
+      height: 155px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #f5d061 0%, #b5851b 85%);
+      border: 4px double #42126b;
+      box-shadow: 0 0 35px rgba(245, 208, 97, 0.8);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #240740;
+      font-family: 'Cinzel Decorative', cursive;
+      animation: pulseSeal 2s infinite;
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    #curtain-overlay.open .wax-seal-btn {
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, -50%) scale(1.4);
+    }
+
+    @keyframes pulseSeal {
+      0%, 100% { box-shadow: 0 0 25px rgba(245, 208, 97, 0.65); }
+      50% { box-shadow: 0 0 50px rgba(245, 208, 97, 1); }
+    }
+
+    /* Invitation Transition Stage */
+    #invitation-stage {
+      display: none;
+      text-align: center;
+    }
+
+    .scene-card {
+      background: var(--bg-card);
+      border: 1.5px solid rgba(245, 208, 97, 0.45);
+      border-radius: 24px;
+      padding: 36px 24px;
+      margin-bottom: 26px;
+      opacity: 0;
+      transform: translateY(35px) scale(0.96);
+      transition: opacity 1s ease, transform 1s ease;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.6);
+    }
+
+    .scene-card.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .om-header {
+      font-family: 'Cinzel Decorative', cursive;
+      color: var(--gold);
+      font-size: 1.15rem;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+
+    .parents-block {
+      color: var(--lavender);
+      font-size: 0.98rem;
+      line-height: 1.7;
+      margin: 14px 0;
+    }
+
+    .couple-names {
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(2.8rem, 8vw, 4.6rem);
+      color: var(--gold);
+      margin: 16px 0;
+      text-shadow: 0 4px 18px rgba(245, 208, 97, 0.4);
+    }
+
+    .ampersand {
+      display: block;
+      font-size: 2.2rem;
+      color: var(--lavender);
+    }
+
+    /* Romantic Quote Styling */
+    .quote-box {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(1.15rem, 3vw, 1.4rem);
+      color: var(--lavender);
+      max-width: 660px;
+      margin: 18px auto;
+      padding: 14px 20px;
+      border-left: 3px solid var(--gold);
+      border-right: 3px solid var(--gold);
+      background: rgba(19, 4, 36, 0.45);
+      border-radius: 12px;
+      line-height: 1.5;
+    }
+
+    .date-badge {
+      display: inline-block;
+      margin: 14px 0 8px;
+      padding: 10px 26px;
+      border-top: 1.5px solid var(--gold);
+      border-bottom: 1.5px solid var(--gold);
+      font-family: 'Cinzel Decorative', cursive;
+      font-size: 1.2rem;
+      color: var(--gold);
+    }
+
+    /* Embedded Google Map Frame */
+    .map-frame-wrap {
+      margin-top: 18px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1.5px solid rgba(245, 208, 97, 0.5);
+      height: 240px;
+      background: #1a0833;
+    }
+
+    .map-frame-wrap iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    /* Floating Music Button */
+    #music-toggle {
+      position: fixed;
+      bottom: 22px;
+      right: 22px;
+      z-index: 95;
+      display: none;
+      background: linear-gradient(135deg, #f5d061, #c99e32);
+      color: #1e0638;
+      border: none;
+      border-radius: 50px;
+      padding: 10px 18px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+    }
+
+    /* QR Share Box */
+    .qr-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    #qrcode-container {
+      background: #ffffff;
+      padding: 14px;
+      border-radius: 16px;
+      border: 4px solid var(--gold);
+      display: inline-block;
+    }
+
+    .warning-banner {
+      background: rgba(245, 208, 97, 0.14);
+      border: 1px dashed var(--gold);
+      color: var(--lavender);
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 0.83rem;
+      margin-top: 10px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="sparkle-canvas"></canvas>
+
+  <!-- Background Audio Element -->
+  <!-- Rename your "Aaj Se Teri" MP3 file to "song.mp3" inside the same folder! -->
+  <audio id="wedding-audio" loop preload="auto">
+    <source id="audio-source" src="song.mp3" type="audio/mpeg">
+  </audio>
+
+  <button id="music-toggle" onclick="toggleAudio()">🔊 Music: Playing</button>
+
+  <!-- Royal Curtain Opening Overlay -->
+  <div id="curtain-overlay">
+    <div class="curtain-panel curtain-left"></div>
+    <div class="curtain-panel curtain-right"></div>
+    <button class="wax-seal-btn" onclick="openRoyalCurtain()">
+      <span id="seal-initials" style="font-size: 1.65rem; font-weight: 700;">G & B</span>
+      <span style="font-size: 0.72rem; margin-top: 4px; font-family: 'Poppins', sans-serif; font-weight: 600;">TAP TO OPEN</span>
+    </button>
+  </div>
+
+  <div class="app-container">
+    <!-- 1. DATA REQUIREMENT / CREATOR FORM SECTION -->
+    <div id="creator-section" class="glass-card">
+      <div class="title-banner">
+        <h1>✨ Royal Purple Wedding Creator ✨</h1>
+        <p>Choose Groom or Bride first, then fill in the wedding & reception details to create your shareable QR invitation</p>
+      </div>
+
+      <!-- STEP 1: CHOOSE GROOM OR BRIDE SIDE FIRST -->
+      <div class="side-selector-wrap">
+        <div class="side-selector-title">Step 1: Select Whose Name Appears First in Transition</div>
+        <div class="side-options">
+          <div class="side-card active" id="card-groom" onclick="selectSide('groom')">
+            <span class="emoji">🤵</span>
+            <span class="side-name">Groom's Side</span>
+            <span class="side-desc">Groom's Name & Parents Appear 1st</span>
+          </div>
+          <div class="side-card" id="card-bride" onclick="selectSide('bride')">
+            <span class="emoji">👰</span>
+            <span class="side-name">Bride's Side</span>
+            <span class="side-desc">Bride's Name & Parents Appear 1st</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: COUPLE & PARENTS DETAILS -->
+      <div class="section-divider">👑 Couple & Parents Details</div>
+      <div class="form-grid">
+        <div class="input-group">
+          <label>Groom's Name</label>
+          <input type="text" id="in-groom" placeholder="e.g., Siddharth Verma" />
+        </div>
+        <div class="input-group">
+          <label>Bride's Name</label>
+          <input type="text" id="in-bride" placeholder="e.g., Ananya Sharma" />
+        </div>
+        <div class="input-group">
+          <label>Groom's Parents' Names</label>
+          <input type="text" id="in-gparents" placeholder="e.g., Smt. Sunita & Shri Vikram Verma" />
+        </div>
+        <div class="input-group">
+          <label>Bride's Parents' Names</label>
+          <input type="text" id="in-bparents" placeholder="e.g., Smt. Kavita & Shri Rajesh Sharma" />
+        </div>
+
+        <!-- INVITATION QUOTE CHOICE -->
+        <div class="input-group full-width">
+          <label>Select Royal Wedding Invitation Quote</label>
+          <select id="in-quote-select" onchange="updateQuoteInput()">
+            <option value="0">“Two souls with but a single thought, two hearts that beat as one.”</option>
+            <option value="1">“Once in a while, right in the middle of an ordinary life, love gives us a fairy tale.”</option>
+            <option value="2">“Written in the stars and blessed by the divine, our forever begins today.”</option>
+            <option value="3">“With the blessings of our parents, we invite you to witness the beginning of our forever.”</option>
+            <option value="custom">✨ Write My Own Custom Quote...</option>
+          </select>
+        </div>
+        <div class="input-group full-width" id="custom-quote-wrap" style="display: none;">
+          <label>Your Custom Invitation Quote</label>
+          <input type="text" id="in-custom-quote" placeholder="Enter your special wedding quote..." />
+        </div>
+      </div>
+
+      <!-- STEP 3: MARRIAGE CEREMONY DETAILS -->
+      <div class="section-divider">🔥 Auspicious Marriage Details</div>
+      <div class="form-grid">
+        <div class="input-group">
+          <label>Marriage Date</label>
+          <input type="date" id="in-date" />
+        </div>
+        <div class="input-group">
+          <label>Marriage Auspicious Time</label>
+          <input type="text" id="in-time" placeholder="e.g., 7:30 PM Auspicious Muhurtham" />
+        </div>
+        <div class="input-group full-width">
+          <label>Marriage Venue Name & Full City Address (For Google Maps)</label>
+          <input type="text" id="in-venue" placeholder="e.g., Mayfair Lagoon, Jaydev Vihar, Bhubaneswar, Odisha" />
+        </div>
+      </div>
+
+      <!-- STEP 4: RECEPTION DETAILS -->
+      <div class="section-divider">🥂 Grand Reception Details</div>
+      <div class="form-grid">
+        <div class="input-group">
+          <label>Reception Date</label>
+          <input type="date" id="in-rdate" />
+        </div>
+        <div class="input-group">
+          <label>Reception Time</label>
+          <input type="text" id="in-rtime" placeholder="e.g., 8:00 PM Onwards" />
+        </div>
+        <div class="input-group full-width">
+          <label>Reception Venue Name & Full City Address (For Google Maps)</label>
+          <input type="text" id="in-rvenue" placeholder="e.g., Swosti Premium, Jaydev Vihar, Bhubaneswar, Odisha" />
+        </div>
+      </div>
+
+      <!-- STEP 5: AUDIO & OPTIONAL URL -->
+      <div class="section-divider">🎵 Transition Song & Sharing</div>
+      <div class="form-grid">
+        <div class="input-group full-width">
+          <label>Select Song ("Aaj Se Teri.mp3") For Instant Preview (Or keep 'song.mp3' in folder)</label>
+          <input type="file" id="in-song-file" accept="audio/*" />
+        </div>
+        <div class="input-group full-width">
+          <label>Optional Public Website URL (Leave blank if already hosted on GitHub Pages / Vercel / Cloudflare)</label>
+          <input type="text" id="in-base-url" placeholder="e.g., https://yourname.github.io/wedding-invite" />
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-outline" type="button" onclick="loadSampleData()">👑 Load Royal Sample</button>
+        <button class="btn btn-gold" type="button" onclick="startInvitationPreview()">✨ Launch Dynamic Transition & QR</button>
+      </div>
+
+      <!-- ABOUT US SECTION AT BOTTOM OF DATA REQUIREMENT PAGE -->
+      <div class="about-us-footer">
+        <h3>✨ About Us ✨</h3>
+        <p><strong>Developer:</strong> Gourab Pradhan</p>
+        <p><strong>Email:</strong> <a href="mailto:pradhangourab469@gmail.com">pradhangourab469@gmail.com</a></p>
+      </div>
+    </div>
+
+    <!-- 2. DYNAMIC INVITATION STAGE -->
+    <div id="invitation-stage">
+      <!-- Scene 1: Parents & Blessings (Ordered dynamically by Groom/Bride choice) -->
+      <div class="scene-card" id="scene-1">
+        <div class="om-header">|| श्री गणेशाय नमः ||</div>
+        <p style="color: var(--gold); letter-spacing: 1px; font-size: 0.9rem;">WITH THE HEAVENLY BLESSINGS OF</p>
+        <div class="parents-block">
+          <strong id="out-first-parents" style="color: #fff;"></strong><br/>
+          <span style="font-size: 0.85rem; color: var(--gold);">&amp;</span><br/>
+          <strong id="out-second-parents" style="color: #fff;"></strong>
+        </div>
+        <p style="color: var(--lavender); font-size: 0.92rem;">We cordially invite you to grace the auspicious wedding ceremony of</p>
+      </div>
+
+      <!-- Scene 2: Couple Grand Reveal & Quote (Ordered dynamically by Groom/Bride choice) -->
+      <div class="scene-card" id="scene-2">
+        <div class="couple-names">
+          <span id="out-first-person">First</span>
+          <span class="ampersand">&amp;</span>
+          <span id="out-second-person">Second</span>
+        </div>
+
+        <!-- Romantic Invitation Quote -->
+        <div class="quote-box" id="out-quote">
+          “Two souls with but a single thought, two hearts that beat as one.”
+        </div>
+
+        <div class="date-badge" id="out-date">Date</div>
+        <p id="out-time" style="color: var(--lavender); margin-top: 6px; font-size: 1rem;"></p>
+      </div>
+
+      <!-- Scene 3: Marriage Venue & Working Google Map -->
+      <div class="scene-card" id="scene-3">
+        <h2 style="font-family: 'Cinzel Decorative', cursive; color: var(--gold); font-size: 1.35rem;">🔥 Auspicious Marriage Venue</h2>
+        <p id="out-venue" style="color: var(--white); margin-top: 10px; font-size: 1.05rem; font-weight: 500;"></p>
+
+        <div class="map-frame-wrap">
+          <iframe id="out-map-iframe" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+
+        <div class="btn-row" style="margin-top: 18px;">
+          <a id="out-map-btn" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-gold">
+            🗺️ Open Marriage Venue in Google Maps
+          </a>
+        </div>
+      </div>
+
+      <!-- Scene 4: Reception Date, Time & Working Google Map -->
+      <div class="scene-card" id="scene-4">
+        <h2 style="font-family: 'Cinzel Decorative', cursive; color: var(--gold); font-size: 1.35rem;">🥂 Grand Reception Ceremony</h2>
+        <div class="date-badge" id="out-rdate">Reception Date</div>
+        <p id="out-rtime" style="color: var(--lavender); margin-top: 4px; font-size: 0.98rem;"></p>
+        <p id="out-rvenue" style="color: var(--white); margin-top: 10px; font-size: 1.05rem; font-weight: 500;"></p>
+
+        <div class="map-frame-wrap">
+          <iframe id="out-rmap-iframe" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+
+        <div class="btn-row" style="margin-top: 18px;">
+          <a id="out-rmap-btn" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-gold">
+            🗺️ Open Reception Venue in Google Maps
+          </a>
+        </div>
+      </div>
+
+      <!-- Scene 5: Shareable QR Code (Hidden when guests scan QR) -->
+      <div class="scene-card" id="scene-qr">
+        <h3 style="font-family: 'Cinzel Decorative', cursive; color: var(--gold); font-size: 1.25rem;">📱 Scan QR to View Transition</h3>
+        <p style="color: var(--lavender); font-size: 0.88rem; margin-top: 6px;">
+          When guests scan this QR code, their phone will open the Royal Curtain and play your wedding transition & music.
+        </p>
+
+        <div class="qr-box">
+          <div id="qrcode-container"></div>
+          <div id="url-warning" class="warning-banner" style="display: none;">
+            ⚠️ <strong>Local File Notice:</strong> Upload this folder (`index.html` + `song.mp3`) to <strong>GitHub Pages, Cloudflare Pages, or Vercel</strong> so this QR code scans on any phone worldwide!
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-gold" onclick="copyInviteLink()">🔗 Copy Shareable Link</button>
+            <button class="btn btn-outline" onclick="backToEditor()">✏️ Edit Invitation Details</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let selectedSide = "groom"; // Default: Groom first
+    let currentShareUrl = "";
+    let uploadedAudioBlobUrl = null;
+
+    const DEFAULT_QUOTES = [
+      "“Two souls with but a single thought, two hearts that beat as one.”",
+      "“Once in a while, right in the middle of an ordinary life, love gives us a fairy tale.”",
+      "“Written in the stars and blessed by the divine, our forever begins today.”",
+      "“With the blessings of our parents, we invite you to witness the beginning of our forever.”"
+    ];
+
+    const audioEl = document.getElementById("wedding-audio");
+    const audioSrc = document.getElementById("audio-source");
+    const musicBtn = document.getElementById("music-toggle");
+
+    // Step 1: Select Groom or Bride first
+    function selectSide(side) {
+      selectedSide = side;
+      document.getElementById("card-groom").classList.toggle("active", side === "groom");
+      document.getElementById("card-bride").classList.toggle("active", side === "bride");
+    }
+
+    // Handle Quote Dropdown
+    function updateQuoteInput() {
+      const val = document.getElementById("in-quote-select").value;
+      document.getElementById("custom-quote-wrap").style.display = (val === "custom") ? "flex" : "none";
+    }
+
+    // Instant local song preview
+    document.getElementById("in-song-file").addEventListener("change", function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        uploadedAudioBlobUrl = URL.createObjectURL(file);
+        audioSrc.src = uploadedAudioBlobUrl;
+        audioEl.load();
+      }
+    });
+
+    function loadSampleData() {
+      document.getElementById("in-groom").value = "Siddharth";
+      document.getElementById("in-bride").value = "Ananya";
+      document.getElementById("in-gparents").value = "Smt. Sunita & Shri Vikram Verma";
+      document.getElementById("in-bparents").value = "Smt. Kavita & Shri Rajesh Sharma";
+      document.getElementById("in-date").value = "2026-12-18";
+      document.getElementById("in-time").value = "7:30 PM Auspicious Muhurtham";
+      document.getElementById("in-venue").value = "Mayfair Lagoon, Jaydev Vihar, Bhubaneswar, Odisha";
+      document.getElementById("in-rdate").value = "2026-12-21";
+      document.getElementById("in-rtime").value = "8:00 PM Onwards";
+      document.getElementById("in-rvenue").value = "Swosti Premium, Jaydev Vihar, Bhubaneswar, Odisha";
+      document.getElementById("in-quote-select").value = "2";
+      updateQuoteInput();
+    }
+
+    function getFormData() {
+      const qSelect = document.getElementById("in-quote-select").value;
+      let finalQuote = "";
+      if (qSelect === "custom") {
+        finalQuote = document.getElementById("in-custom-quote").value.trim() || DEFAULT_QUOTES[0];
+      } else {
+        finalQuote = DEFAULT_QUOTES[parseInt(qSelect, 10)] || DEFAULT_QUOTES[0];
+      }
+
+      return {
+        side: selectedSide,
+        g: document.getElementById("in-groom").value.trim() || "Siddharth",
+        b: document.getElementById("in-bride").value.trim() || "Ananya",
+        gp: document.getElementById("in-gparents").value.trim() || "Groom's Parents",
+        bp: document.getElementById("in-bparents").value.trim() || "Bride's Parents",
+        d: document.getElementById("in-date").value || "2026-12-18",
+        t: document.getElementById("in-time").value.trim() || "7:30 PM Onwards",
+        v: document.getElementById("in-venue").value.trim() || "Mayfair Lagoon, Bhubaneswar",
+        rd: document.getElementById("in-rdate").value || "2026-12-21",
+        rt: document.getElementById("in-rtime").value.trim() || "8:00 PM Onwards",
+        rv: document.getElementById("in-rvenue").value.trim() || "Swosti Premium, Bhubaneswar",
+        q: finalQuote
+      };
+    }
+
+    function formatPrettyDate(dateStr) {
+      if (!dateStr) return "Auspicious Date";
+      const d = new Date(dateStr + "T00:00:00");
+      if (isNaN(d)) return dateStr;
+      return d.toLocaleDateString("en-IN", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      });
+    }
+
+    function renderInvitationData(data, isGuestView = false) {
+      const isGroomFirst = (data.side === "groom");
+
+      // Order Names & Parents dynamically based on Groom or Bride selection
+      const firstPerson = isGroomFirst ? data.g : data.b;
+      const secondPerson = isGroomFirst ? data.b : data.g;
+      const firstParents = isGroomFirst ? data.gp : data.bp;
+      const secondParents = isGroomFirst ? data.bp : data.gp;
+
+      document.getElementById("out-first-person").textContent = firstPerson;
+      document.getElementById("out-second-person").textContent = secondPerson;
+      document.getElementById("out-first-parents").textContent = firstParents;
+      document.getElementById("out-second-parents").textContent = secondParents;
+
+      // Initials on Wax Seal in selected order
+      const init1 = firstPerson.charAt(0).toUpperCase();
+      const init2 = secondPerson.charAt(0).toUpperCase();
+      document.getElementById("seal-initials").textContent = `${init1} & ${init2}`;
+
+      // Quote
+      document.getElementById("out-quote").textContent = data.q || DEFAULT_QUOTES[0];
+
+      // Marriage Details & Map
+      document.getElementById("out-date").textContent = formatPrettyDate(data.d);
+      document.getElementById("out-time").textContent = data.t;
+      document.getElementById("out-venue").textContent = data.v;
+
+      const encodedVenue = encodeURIComponent(data.v);
+      document.getElementById("out-map-btn").href = `https://www.google.com/maps/search/?api=1&query=${encodedVenue}`;
+      document.getElementById("out-map-iframe").src = `https://maps.google.com/maps?q=${encodedVenue}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+
+      // Reception Details & Map
+      const rScene = document.getElementById("scene-4");
+      if (data.rv || data.rd) {
+        rScene.style.display = "block";
+        document.getElementById("out-rdate").textContent = formatPrettyDate(data.rd);
+        document.getElementById("out-rtime").textContent = data.rt;
+        document.getElementById("out-rvenue").textContent = data.rv;
+
+        const encodedRVenue = encodeURIComponent(data.rv);
+        document.getElementById("out-rmap-btn").href = `https://www.google.com/maps/search/?api=1&query=${encodedRVenue}`;
+        document.getElementById("out-rmap-iframe").src = `https://maps.google.com/maps?q=${encodedRVenue}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+      } else {
+        rScene.style.display = "none";
+      }
+
+      // Build Shareable URL for QR Code
+      const params = new URLSearchParams(data);
+      params.set("invite", "1");
+
+      let baseUrl = document.getElementById("in-base-url").value.trim();
+      if (!baseUrl) {
+        baseUrl = window.location.origin + window.location.pathname;
+      }
+      baseUrl = baseUrl.replace(/\/$/, "");
+      currentShareUrl = `${baseUrl}/?${params.toString()}`;
+
+      // Show warning if running on local file
+      const isLocalOrPreview =
+        currentShareUrl.startsWith("file:") ||
+        currentShareUrl.startsWith("blob:") ||
+        currentShareUrl.includes("localhost") ||
+        currentShareUrl.includes("127.0.0.1");
+
+      document.getElementById("url-warning").style.display = isLocalOrPreview ? "block" : "none";
+
+      // Generate Scannable QR Code
+      const qrBox = document.getElementById("qrcode-container");
+      qrBox.innerHTML = "";
+      new QRCode(qrBox, {
+        text: currentShareUrl,
+        width: 200,
+        height: 200,
+        colorDark: "#240740",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.L
+      });
+
+      // Switch to Invitation Stage
+      document.getElementById("creator-section").style.display = "none";
+      document.getElementById("invitation-stage").style.display = "block";
+      document.getElementById("scene-qr").style.display = isGuestView ? "none" : "block";
+
+      // Show Royal Curtain
+      const curtain = document.getElementById("curtain-overlay");
+      curtain.classList.remove("open");
+      curtain.style.display = "block";
+
+      // Reset scene animations
+      document.querySelectorAll(".scene-card").forEach(card => card.classList.remove("visible"));
+    }
+
+    function startInvitationPreview() {
+      const data = getFormData();
+      renderInvitationData(data, false);
+    }
+
+    function openRoyalCurtain() {
+      const curtain = document.getElementById("curtain-overlay");
+      curtain.classList.add("open");
+
+      // Play song.mp3 ("Aaj Se Teri") or fallback chime
+      musicBtn.style.display = "block";
+      audioEl.play().then(() => {
+        musicBtn.textContent = "🔊 Music: Playing";
+      }).catch(() => {
+        playFallbackRoyalChime();
+        musicBtn.textContent = "🎵 Play Song";
+      });
+
+      setTimeout(() => {
+        curtain.style.display = "none";
+      }, 1400);
+
+      // Staggered Reveal for Scenes (Parents -> Couple & Quote -> Marriage Map -> Reception Map -> QR)
+      const scenes = ["scene-1", "scene-2", "scene-3", "scene-4", "scene-qr"];
+      scenes.forEach((id, index) => {
+        setTimeout(() => {
+          const el = document.getElementById(id);
+          if (el && el.style.display !== "none") {
+            el.classList.add("visible");
+          }
+        }, 450 + index * 550);
+      });
+    }
+
+    function toggleAudio() {
+      if (audioEl.paused) {
+        audioEl.play();
+        musicBtn.textContent = "🔊 Music: Playing";
+      } else {
+        audioEl.pause();
+        musicBtn.textContent = "🔇 Music: Paused";
+      }
+    }
+
+    function playFallbackRoyalChime() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const notes = [261.63, 329.63, 392.00, 523.25, 659.25];
+        notes.forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = "triangle";
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.12, ctx.currentTime + i * 0.12);
+          gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + i * 0.12 + 1.8);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + i * 0.12);
+          osc.stop(ctx.currentTime + i * 0.12 + 1.8);
+        });
+      } catch (e) {}
+    }
+
+    function copyInviteLink() {
+      navigator.clipboard.writeText(currentShareUrl).then(() => {
+        alert("Royal Invitation Link Copied!\n\n" + currentShareUrl);
+      });
+    }
+
+    function backToEditor() {
+      audioEl.pause();
+      musicBtn.style.display = "none";
+      document.getElementById("invitation-stage").style.display = "none";
+      document.getElementById("creator-section").style.display = "block";
+    }
+
+    // Automatically load transition when scanned via QR Code
+    window.addEventListener("DOMContentLoaded", () => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("invite") === "1") {
+        const scannedData = {
+          side: params.get("side") || "groom",
+          g: params.get("g") || "Groom",
+          b: params.get("b") || "Bride",
+          gp: params.get("gp") || "",
+          bp: params.get("bp") || "",
+          d: params.get("d") || "",
+          t: params.get("t") || "",
+          v: params.get("v") || "",
+          rd: params.get("rd") || "",
+          rt: params.get("rt") || "",
+          rv: params.get("rv") || "",
+          q: params.get("q") || DEFAULT_QUOTES[0]
+        };
+        renderInvitationData(scannedData, true);
+      }
+    });
+
+    // Golden Floating Sparkles Animation
+    const canvas = document.getElementById("sparkle-canvas");
+    const ctx = canvas.getContext("2d");
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    for (let i = 0; i < 55; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 2.2 + 0.6,
+        vy: -(Math.random() * 0.45 + 0.15),
+        alpha: Math.random() * 0.8 + 0.2
+      });
+    }
+
+    function animateSparkles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.y += p.vy;
+        if (p.y < 0) p.y = canvas.height;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(245, 208, 97, ${p.alpha})`;
+        ctx.fill();
+      });
+      requestAnimationFrame(animateSparkles);
+    }
+    animateSparkles();
+  </script>
+</body>
+</html>
